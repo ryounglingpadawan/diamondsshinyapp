@@ -1,4 +1,4 @@
-diamondsshinyapp
+Predicting Diamond Prices via an interactive web interface
 ================
 This repo contains the source files for the Shiny App found at http://rpadawan.shinyapps.io/diamonds
 (These are the server.R and the ui.R files.)
