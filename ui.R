@@ -60,7 +60,7 @@ shinyUI(fluidPage(
                    p("The model is a simple linear regression model of the following form:"),
                    code("model<-lm(log(price) ~ log(carat) + color + clarity + cut, data=diamonds)"),
                    p("The ui.R and server.R files for this app can be found here ",
-                     a("on Github",href="https://github.com/ryounglingpadawan/diamondsshinyapp"))
+                     a("on Github",href="https://github.com/yuannwang8/diamondsshinyapp"))
                   ),
           
           tabPanel("Motivation",
