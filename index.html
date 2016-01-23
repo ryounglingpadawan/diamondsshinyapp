@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Predicting Diamond Prices</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Predicting Diamond Prices">
+  <meta name="author" content="ryounglingpadawan">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Predicting Diamond Prices</h1>
+    <h2>Based on ggplot2's &quot;diamonds&quot; dataset</h2>
+    <p>ryounglingpadawan<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h1>Introduction &amp; Motivation</h1>
+  </hgroup>
+  <article data-timings="">
+    <p>One day you find youself wanting to figure out the prices of a number of loose cut diamonds.  You know that each diamond is graded by the <a href="www.gia.edu">Gemological Institute of America</a> according to four characteristics, namely the <strong>4Cs</strong></p>
+
+<ul>
+<li><strong>carat</strong> weight (of the diamond)</li>
+<li><strong>color</strong> (grades ranges from J (worst) to D (best))</li>
+<li><strong>clarity</strong> (grades: I1 (worst), SI1, SI2, VS1, VS2, VVS1, VVS2, IF (best))</li>
+<li><strong>cut</strong> (grades: Fair, Good, Very Good, Premium, Ideal)</li>
+</ul>
+
+<p>You know that the <code>ggplot2</code> package contains a dataset of diamonds and their prices.</p>
+
+<pre><code class="r">library(ggplot2); data(diamonds); head(diamonds)[1:2,]
+</code></pre>
+
+<pre><code>##   carat     cut color clarity depth table price    x    y    z
+## 1  0.23   Ideal     E     SI2  61.5    55   326 3.95 3.98 2.43
+## 2  0.21 Premium     E     SI1  59.8    61   326 3.89 3.84 2.31
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Model</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>You decide to build a <code>lm</code> model.  As you have the loose diamonds&#39; GIA certifications with you, you can read the <strong>4Cs</strong>  into the model. The dataset also contains physical measurements of the size of the diamond.  However, since you know that weight is directly related to the diamond&#39;s volume (and also that you do not have good quality rulers with you), you decide not to use the dimension variables. </p>
+
+<p>First you ensure that each variable is of the correct class </p>
+
+<ul>
+<li><code>price</code> and <code>carat</code> variables are <code>numeric</code>, and</li>
+<li><code>clarity</code>, <code>cut</code> and <code>color</code> variables as <code>factor</code></li>
+</ul>
+
+<p>Then you build the simple linear regression model.</p>
+
+<pre><code class="r">fit.4C&lt;-lm(log(price) ~ log(carat) + color + clarity + cut, data=ddata)
+summary(fit.4C)$r.squared # this gives the adjusted R-squared value for the model.
+</code></pre>
+
+<pre><code>## [1] 0.9826
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Prediction</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>You decide to build the following function to help make predictions (including a 95% Prediction Interval). </p>
+
+<pre><code class="r">ModOut&lt;-function(carat,color,clarity,cut)  {
+  user.input&lt;-data.frame(carat,color,clarity,cut)
+  user.input$carat&lt;-as.numeric(user.input$carat)
+  PredFit&lt;-predict(fit.4C,newdata=user.input, interval=&quot;prediction&quot;)
+  round(exp(PredFit),2)
+}
+# Test Prediction.  Key in required diamond attributes here.  For example
+ModOut(0.5,&quot;D&quot;,&quot;I1&quot;,&quot;Fair&quot;)
+</code></pre>
+
+<pre><code>##     fit   lwr   upr
+## 1 700.1 538.4 910.2
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Shiny APP</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Making the model <a href="http://rpadawan.shinyapps.io/diamonds/">interactive via Shiny</a>. </p>
+
+<p>Here&#39;s a screenshot. Go to the Shiny App and try it out!</p>
+
+<p><img src="./screenshot.png" alt="screenshot of app"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Introduction &amp; Motivation'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Model'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Prediction'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Shiny APP'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <script src="shared/shiny.js" type="text/javascript"></script>
+  <script src="shared/slider/js/jquery.slider.min.js"></script>
+  <script src="shared/bootstrap/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="shared/slider/css/jquery.slider.min.css"></link>
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
