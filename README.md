@@ -4,6 +4,6 @@ This interactive interface for a linear regression model predictor was built in 
 
 This repo contains the source files for the Shiny App found at http://rpadawan.shinyapps.io/diamonds
 
-This repo also contains the write up (motivation and data description) for this project. The report can be read here http://ryounglingpadawan.github.io/diamondsshinyapp/index.html
+This repo also contains the write up (motivation and data description) for this project. The report can be read here http://yuannwang8.github.io/diamondsshinyapp/index.html
 
 The R Shiny app files are the server.R and the ui.R files. Everything else here goes towards buiding the Slidify R HTML presentation.
